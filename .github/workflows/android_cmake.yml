@@ -17,7 +17,7 @@ jobs:
     steps:
     - name: Fetch OpenSSL
       run: |
-        git clone https://github.com/KDAB/android_openssl.git ../android_openssl
+        git clone --depth 1 https://github.com/KDAB/android_openssl.git ../android_openssl
     - uses: actions/checkout@v2
     # - name: Checkout submodules
     #   uses: srt32/git-actions@v0.0.3
@@ -64,8 +64,11 @@ jobs:
       run: |
         pwd
         make
+        OPENSSL_LIB_DIR=../android_openssl/ssl_1.1/arm64-v8a
+        test -f "$OPENSSL_LIB_DIR/libcrypto_1_1.so"
+        test -f "$OPENSSL_LIB_DIR/libssl_1_1.so"
         mkdir -p android-build/libs/arm64-v8a
-        cp libcrypto_1_1.so libssl_1_1.so android-build/libs/arm64-v8a/
+        cp "$OPENSSL_LIB_DIR/libcrypto_1_1.so" "$OPENSSL_LIB_DIR/libssl_1_1.so" android-build/libs/arm64-v8a/
         make install
         make apk
     - name: show filetrees
