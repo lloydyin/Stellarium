@@ -142,7 +142,7 @@ android {
         ANDROID_TARGET_VERSION     = 21
         ANDROID_APP_NAME           = Stellarium LTS
 
-        ANDROID_ABIS = armeabi-v7a
+        ANDROID_ABIS = arm64-v8a
 
 #        DISTFILES += \
 #                $$ANDROID_PACKAGE_SOURCE_DIR/AndroidManifest.xml \
