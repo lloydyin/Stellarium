@@ -11,31 +11,31 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
     
     steps:
     - name: Fetch OpenSSL
       run: |
         git clone --depth 1 https://github.com/KDAB/android_openssl.git ../android_openssl
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '8'
     # - name: Checkout submodules
     #   uses: srt32/git-actions@v0.0.3
     #   with:
     #     args: git submodule update --init --recursive
-    - name: Cache Qt
-      id: cache-qt
-      uses: actions/cache@v1
-      with:
-        path: ../Qt
-        key: ${{ runner.os }}-QtCache
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v4
       with:
         target: 'android'
         version: '5.15.1'
-        modules: 'qtcharts qtwebengine qtscript'
-        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+        modules: 'qtscript'
+        cache: 'true'
+        cache-key-prefix: ${{ runner.os }}-QtCache
     - name: Install Additional Software
       run: |
         wget -q https://dl.google.com/android/repository/android-ndk-r21-linux-x86_64.zip
@@ -74,10 +74,12 @@ jobs:
     - name: show filetrees
       run: |
         ls -R
-    #- uses: actions/upload-artifact@v1
-    #  with:
-    #    name: Debug-APK
-    #    path: android-build/build/outputs/apk/debug/android-build-debug.apk
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Stellarium-Android-arm64-v8a
+        path: |
+          android-build/*.apk
+          android-build/build/outputs/apk/**/*.apk
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
