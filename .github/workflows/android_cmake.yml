@@ -53,8 +53,20 @@ jobs:
           fi
           SDKMANAGER_JAVA_HOME="${JAVA_HOME_17_X64:-$JAVA_HOME}"
           env JAVA_HOME="$SDKMANAGER_JAVA_HOME" "$SDKMANAGER" --version
+          set +o pipefail
           yes | env JAVA_HOME="$SDKMANAGER_JAVA_HOME" "$SDKMANAGER" --licenses
+          sdkmanager_status="${PIPESTATUS[1]}"
+          set -o pipefail
+          if [ "$sdkmanager_status" -ne 0 ]; then
+            exit "$sdkmanager_status"
+          fi
+          set +o pipefail
           yes | env JAVA_HOME="$SDKMANAGER_JAVA_HOME" "$SDKMANAGER" --install "platforms;android-30"
+          sdkmanager_status="${PIPESTATUS[1]}"
+          set -o pipefail
+          if [ "$sdkmanager_status" -ne 0 ]; then
+            exit "$sdkmanager_status"
+          fi
         } 2>&1 | tee setup.log
     - name: Configure
       run: |
