@@ -62,24 +62,32 @@ jobs:
           -DQT_QMAKE_EXECUTABLE:STRING=$Qt5_DIR/bin/qmake
     - name: Compile
       run: |
-        pwd
-        make
-        OPENSSL_LIB_DIR=../android_openssl/ssl_1.1/arm64-v8a
-        test -f "$OPENSSL_LIB_DIR/libcrypto_1_1.so"
-        test -f "$OPENSSL_LIB_DIR/libssl_1_1.so"
-        mkdir -p android-build/libs/arm64-v8a
-        cp "$OPENSSL_LIB_DIR/libcrypto_1_1.so" "$OPENSSL_LIB_DIR/libssl_1_1.so" android-build/libs/arm64-v8a/
-        make install
-        make apk
+        set -o pipefail
+        {
+          pwd
+          make VERBOSE=1
+          OPENSSL_LIB_DIR=../android_openssl/ssl_1.1/arm64-v8a
+          test -f "$OPENSSL_LIB_DIR/libcrypto_1_1.so"
+          test -f "$OPENSSL_LIB_DIR/libssl_1_1.so"
+          mkdir -p android-build/libs/arm64-v8a
+          cp "$OPENSSL_LIB_DIR/libcrypto_1_1.so" "$OPENSSL_LIB_DIR/libssl_1_1.so" android-build/libs/arm64-v8a/
+          make install
+          make apk
+        } 2>&1 | tee build.log
     - name: show filetrees
+      if: always()
       run: |
-        ls -R
+        ls -R | tee filetrees.log
     - uses: actions/upload-artifact@v4
+      if: always()
       with:
         name: Stellarium-Android-arm64-v8a
         path: |
+          build.log
+          filetrees.log
           android-build/*.apk
           android-build/build/outputs/apk/**/*.apk
+        if-no-files-found: warn
     - uses: "marvinpinto/action-automatic-releases@latest"
       with:
         repo_token: "${{ secrets.GITHUB_TOKEN }}"
