@@ -20,5 +20,5 @@ jobs:
     - name: qmake apk
       run: |
         cd android_project/stellarium
-        qmake stellariumLTS.pro -spec android-clang "CONFIG+=debug" "CONFIG+=qml_debug" ANDROID_ABIS="armeabi-v7a"
+        qmake stellariumLTS.pro -spec android-clang "CONFIG+=debug" "CONFIG+=qml_debug" ANDROID_ABIS="arm64-v8a"
         make
