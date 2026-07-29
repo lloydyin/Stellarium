@@ -100,7 +100,19 @@ jobs:
           mkdir -p android-build/libs/arm64-v8a
           cp "$OPENSSL_LIB_DIR/libcrypto_1_1.so" "$OPENSSL_LIB_DIR/libssl_1_1.so" android-build/libs/arm64-v8a/
           make install
-          "$Qt5_DIR/bin/androiddeployqt" --input android_deployment_settings.json --output android-build --android-platform android-30 --gradle --verbose
+          ANDROIDDEPLOYQT="$(command -v androiddeployqt || true)"
+          if [ -z "$ANDROIDDEPLOYQT" ] && [ -x "$Qt5_DIR/bin/androiddeployqt" ]; then
+            ANDROIDDEPLOYQT="$Qt5_DIR/bin/androiddeployqt"
+          fi
+          if [ -z "$ANDROIDDEPLOYQT" ] && [ -x "$Qt5_DIR/../../bin/androiddeployqt" ]; then
+            ANDROIDDEPLOYQT="$Qt5_DIR/../../bin/androiddeployqt"
+          fi
+          if [ -z "$ANDROIDDEPLOYQT" ]; then
+            echo "androiddeployqt not found; Qt5_DIR=$Qt5_DIR"
+            find "$(dirname "$(dirname "$Qt5_DIR")")" -name androiddeployqt -type f || true
+            exit 1
+          fi
+          "$ANDROIDDEPLOYQT" --input android_deployment_settings.json --output android-build --android-platform android-30 --gradle --verbose
         } 2>&1 | tee build.log
     - name: show filetrees
       if: always()
