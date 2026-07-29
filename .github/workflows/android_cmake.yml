@@ -43,7 +43,7 @@ jobs:
     - name: Configure
       run: |
         cmake . \
-          -DANDROID_ABI:STRING=armeabi-v7a \
+          -DANDROID_ABI:STRING=arm64-v8a \
           -DANDROID_BUILD_ABI_arm64-v8a:BOOL=OFF \
           -DANDROID_BUILD_ABI_armeabi-v7a:BOOL=ON \
           -DANDROID_BUILD_ABI_x86:BOOL=OFF \
