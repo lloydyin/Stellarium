@@ -129,11 +129,3 @@ jobs:
           android-build/*.apk
           android-build/build/outputs/apk/**/*.apk
         if-no-files-found: warn
-    - uses: "marvinpinto/action-automatic-releases@latest"
-      with:
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        automatic_release_tag: "v0.90.0"
-        prerelease: true
-        title: "Stellarium Android LTS"
-        files: |
-          android-build/build/outputs/apk/debug/android-build-debug.apk
