@@ -1,6 +1,6 @@
 
 #build dir is on build/ (translations dir need)
-#build .so with cmakelists.txt and copy libstelMain_armeabi-v7a.so into ../libsShare
+#build .so with cmakelists.txt and copy libstelMain_arm64-v8a.so into ../libsShare
 #build this
 
 
@@ -49,9 +49,9 @@ android {
         $$STEL/textures \
         $$STEL/build/translations
         INSTALLS += assets
-        LIBS += -lstelMain_armeabi-v7a
+        LIBS += -lstelMain_arm64-v8a
         ANDROID_EXTRA_LIBS += $$files( $$DESTDIR/*.so , true )
-        ANDROID_ABIS = armeabi-v7a
+        ANDROID_ABIS = arm64-v8a
 }
 
 ###################
